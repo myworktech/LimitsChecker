@@ -1,0 +1,52 @@
+limits.add(new BetweenLimit(5000, DateUtils.getDateLimit("09:00"), DateUtils.getDateLimit("23:00")));
+limits.add(new IntervalLimit(2000, 1L));
+limits.add(new Last24hoursLimit(2000));
+
+
+
+
+limits.add(new TimeIntervalLimit(5000, setBound("09:00"), setBound("23:15")))
+limits.add(new TimeIntervalLimit(1000, setBound("23:30"), setBound("09:15")))
+limits.add(new SamePayment(2000, setInterval("24:00")))
+
+// 1. Не более 5000 руб. днем с 9:00 утра до 23:00 за одну услугу(*)
+limit.build()
+				.setBound("09:00")
+				.setBound("23:00")
+				.setAmount(5000);
+
+// 3. Не более 2000 руб. в сутки по одинаковым платежам(**)
+limit.build()
+				.setInterval("24:00")
+				.setAmount(2000)
+				.setSamePayment(); //если убрать это, получится, 2000 руб. в сутки вообще по всем платежам
+
+// 4. Не более 3000 руб. в течение одного часа за одну услугу(*)
+limit.build()
+				.setAmount(3000)
+				.setInterval("01:00")
+				.setSameService();
+
+// 5. Не более 20 одинаковых платежей(**) в сутки
+limit.build()
+				.setSamePaymentCount(20)
+				.perInterval("24:00);
+
+
+// 6. Не более 40 платежей не более чем на 4000 руб.(***) с 10:00 до 17:00 за одну услугу(*)
+limit.build()
+				.setSamePaymentCount(40)
+				.setAmount(4000)
+				.setBound("10:00")
+				.setBound("17:00")
+				.setSameService();
+
+// 7. Не более 10 платежей не более чем на 3000 руб.(***) в течение двух часов в пользу одного клиента
+limit.build()
+				.setPaymentCount(10)
+				.setAmount(3000)
+				.setInterval("02:00")
+				.setSameClient()
+				(*) услуга - это, например, пополнение счета мобильного телефона (лицевой счет клиента) провайдера МТС
+                (**) одинаковые платежи - платежи с одинаковыми счетом клиента и услугой
+                (***) сумма указана для совокупности платежей, т.е., например, клиент может сделать 1 платеж на 4000 руб. или 10 платежей по 400 руб., в сумме дающих 4000 руб.
