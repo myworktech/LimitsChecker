@@ -1,4 +1,4 @@
-package su.vpb.model;
+package fs.processing.model;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;

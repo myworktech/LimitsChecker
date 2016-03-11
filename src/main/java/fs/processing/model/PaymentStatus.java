@@ -1,4 +1,4 @@
-package su.vpb.model;
+package fs.processing.model;
 
 /**
  * Created by pechenkin on 15.09.2015.

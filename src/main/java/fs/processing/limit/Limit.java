@@ -1,7 +1,8 @@
-package su.vpb.limit;
+package fs.processing.limit;
 
 import org.joda.time.DateTime;
-import su.vpb.model.*;
+import fs.processing.model.Payment;
+import fs.processing.model.PaymentStatus;
 
 public class Limit {
     private Integer amount;
@@ -18,13 +19,21 @@ public class Limit {
         sameService = builder.sameService;
     }
 
-    public void check(Payment payment) {
-        if (checkBounds(payment) & checkAmount(paymfent) & checkSameService(payment))
+    public void check(Payment payment) throws Exception {
+        if (checkBounds(payment) & checkAmount(payment) & checkSameService(payment))
                     setFailedStatusFor(payment);
         else
                     setOkayStatusFor(payment);
 
 
+    }
+
+    private boolean checkAmount(Payment payment) {
+        return false;
+    }
+
+    private boolean checkSameService(Payment payment) {
+        return false;
     }
 
     private void setOkayStatusFor(Payment payment) {
@@ -35,7 +44,11 @@ public class Limit {
         payment.setStatus(PaymentStatus.SUBMIT_REQUIRED);
     }
 
-    private boolean checkBounds(Payment payment)  {
+    private boolean checkBounds(Payment payment) throws Exception {
+        if (boundStart == null & boundEnd == null) return true;
+        if (boundStart == null | boundEnd == null ) throw new Exception();
+
+
        return(boundStart.isAfter(payment.getPaymentDate()) & (payment.getPaymentDate()).isAfter(boundEnd));
     }
 }

@@ -1,6 +1,11 @@
-package su.vpb.service;
+package fs.processing.service;
 
 
+import fs.processing.limit.Builder;
+import fs.processing.limit.Limit;
+import fs.processing.limit.LimitStore;
+import fs.processing.model.Account;
+import fs.processing.model.Payment;
 import org.joda.time.*;
 import org.junit.After;
 import org.junit.Before;
@@ -8,13 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
-import su.vpb.limit.*;
-import su.vpb.model.Account;
-import su.vpb.model.Payment;
-import su.vpb.model.Service;
-import su.vpb.limit.LimitStore;
-
-import java.util.*;
+import fs.processing.model.Service;
 
 
 /**
@@ -71,9 +70,9 @@ public class PayLimitPolicyTest {
     }
 
     @Test
-    public void newPayment() {
+    public void newPayment() throws Exception {
         Payment p = new Payment(1000, account101022, service1, DateTime.parse("2016-01-01T23:10"));
-        for (Limit limit:LimitStore.INSTANCE){
+        for (Limit limit: LimitStore.INSTANCE){
             limit.check(p);
         }
     }

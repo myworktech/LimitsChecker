@@ -1,6 +1,7 @@
-package su.vpb.trash;
+package fs.processing.trash;
 
-import su.vpb.model.*;
+import fs.processing.model.Payment;
+import fs.processing.model.PaymentStatus;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package su.vpb.model;
+package fs.processing.model;
 
 import java.io.Serializable;
 

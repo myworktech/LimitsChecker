@@ -1,6 +1,6 @@
-package su.vpb.limit;
+package fs.processing.limit;
 
-import su.vpb.model.Payment;
+import fs.processing.model.Payment;
 
 public interface Limitable {
         boolean check(Payment payment);

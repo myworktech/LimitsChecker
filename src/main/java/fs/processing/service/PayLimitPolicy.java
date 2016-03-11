@@ -1,7 +1,7 @@
-package su.vpb.service;
+package fs.processing.service;
 
-import su.vpb.limit.Limit;
-import su.vpb.model.Payment;
+import fs.processing.limit.Limit;
+import fs.processing.model.Payment;
 
 import java.util.*;
 

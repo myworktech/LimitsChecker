@@ -1,10 +1,9 @@
-package su.vpb.model;
+package fs.processing.model;
 
 import org.joda.time.DateTime;
-import su.vpb.limit.PaymentStore;
+import fs.processing.limit.PaymentStore;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by pechenkin on 15.09.2015.

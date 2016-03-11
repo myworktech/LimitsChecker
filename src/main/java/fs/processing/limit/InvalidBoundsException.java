@@ -1,4 +1,4 @@
-package su.vpb.limit;
+package fs.processing.limit;
 
 public class InvalidBoundsException extends Exception {
     public InvalidBoundsException(){
