@@ -2,16 +2,11 @@ package fs.processing.model;
 
 import java.io.Serializable;
 
-/**
- * Created by pechenkin on 15.09.2015.
- */
-public class Service implements Serializable {
+public class Service {
+
+    private Long id;
 
     private String name;
-
-    public Service(String name) {
-        this.name = name;
-    }
 
     public String getName() {
         return name;
@@ -21,20 +16,25 @@ public class Service implements Serializable {
         this.name = name;
     }
 
+    public Service(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Service)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Service service = (Service) o;
 
-        return !(name != null ? !name.equals(service.name) : service.name != null);
+        return id.equals(service.id);
 
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        return id.hashCode();
     }
 
     @Override

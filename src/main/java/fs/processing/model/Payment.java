@@ -1,50 +1,43 @@
 package fs.processing.model;
 
-import org.joda.time.DateTime;
-import fs.processing.limit.PaymentStore;
+import java.time.LocalDateTime;
 
-import java.io.Serializable;
+public class Payment {
 
-/**
- * Created by pechenkin on 15.09.2015.
- */
-public class Payment implements Serializable {
-
-    private Integer amount;
-
+    private Long id;
+    private Long amount;
     private PaymentStatus status;
-
     private Account account;
-
     private Service service;
+    private LocalDateTime paymentDate;
 
-    private DateTime paymentDate;
-
-    public Payment(Integer amount, Account account, Service service, DateTime paymentDate) {
+    public Payment(Long amount, Account account, Service service, LocalDateTime paymentDate) {
         this.amount = amount;
-        this.status = PaymentStatus.NEW_POLICY;
+        this.status = PaymentStatus.NEW_PAYMENT;
         this.account = account;
         this.service = service;
         this.paymentDate = paymentDate;
-        //хитрец
-        PaymentStore.INSTANCE.add(this);
     }
 
-    public Integer getAmount() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getAmount() {
         return amount;
     }
-
-
 
     public Account getAccount() {
         return account;
     }
 
-
     public Service getService() {
         return service;
     }
-
 
 
     public PaymentStatus getStatus() {
@@ -55,21 +48,35 @@ public class Payment implements Serializable {
         this.status = status;
     }
 
-    public DateTime getPaymentDate() {
+    public LocalDateTime getPaymentDate() {
         return paymentDate;
     }
-
-
-
 
     @Override
     public String toString() {
         return "Payment{ " +
-                "amount=" + amount +
+                "id=" + id +
+                ", amount=" + amount +
                 ", status=" + status +
                 ", account=" + account +
                 ", service=" + service +
                 ", paymentDate=" + paymentDate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Payment payment = (Payment) o;
+
+        return id.equals(payment.id);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

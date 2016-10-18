@@ -1,25 +1,18 @@
 package fs.processing.model;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 
 public class Account implements Serializable {
-    public Account() {
-    }
-    public Account(String name) {
+    public Account(int id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-
-    private @Id @GeneratedValue int id;
+    private int id;
 
     private String name;
-
-    public List<Payment> payments;
-
-
 
     public String getName() {
         return name;
@@ -29,32 +22,34 @@ public class Account implements Serializable {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "'"+name+"'";
+    public int getId() {
+        return id;
+    }
+
+
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Account)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        Account account2 = (Account) o;
+        Account account = (Account) o;
 
-        return !(name != null ? !name.equals(account2.name) : account2.name != null);
+        return id == account.id;
 
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
-    }
-
-    public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public String toString() {
+        return "'"+name+"'";
     }
 }
