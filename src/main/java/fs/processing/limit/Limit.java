@@ -37,9 +37,9 @@ public class Limit {
         List<Payment> result = paymentList.stream()
                 .filter(
                         p -> checkBounds(p)
-                                || checkInterval(p, payment)
-                                || checkSameService(p, payment)
-                                || checkSameAccount(p, payment)
+                                && checkInterval(p, payment)
+                                && checkSameService(p, payment)
+                                && checkSameAccount(p, payment)
                 )
                 .collect(Collectors.toList());
 
@@ -80,15 +80,17 @@ public class Limit {
     }
 
     private boolean checkBounds(Payment payment) {
-        if (boundStart == null || boundEnd == null) return true;
+        if (boundStart.equals(LocalDateTime.MIN) || boundEnd.equals(LocalDateTime.MIN)) return true;
 
-        return boundStart.isBefore(payment.getPaymentDate()) && boundEnd.isAfter(payment.getPaymentDate());
+        return (boundStart.isBefore(payment.getPaymentDate()) && boundEnd.isAfter(payment.getPaymentDate()));
     }
 
     private boolean checkInterval(Payment payment, Payment paymentOrig) {
+        if (interval.equals(Duration.ZERO)) return true;
+
         Duration diff = Duration.between(payment.getPaymentDate(), paymentOrig.getPaymentDate());
 
-        return interval.compareTo(diff) > 0;
+        return (interval.compareTo(diff) > 0);
     }
 
 }

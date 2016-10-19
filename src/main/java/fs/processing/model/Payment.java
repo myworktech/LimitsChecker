@@ -58,14 +58,17 @@ public class Payment {
 
     @Override
     public String toString() {
-        return "Payment{ " +
-                "id=" + id +
-                ", amount=" + amount +
-                ", status=" + status +
-                ", account=" + account +
-                ", service=" + service +
-                ", paymentDate=" + paymentDate +
-                '}';
+        return String.format("Payment {id=%s, amount=%s, status=%s, account=%s, service=%s, paymentDate=%s}"
+                , id<10 ? "0"+id : id, amount, status, account, service, paymentDate);
+
+//        return "Payment{ " +
+//                "id=" + id +
+//                ", amount=" + amount +
+//                ", status=" + status +
+//                ", account=" + account +
+//                ", service=" + service +
+//                ", paymentDate=" + paymentDate +
+//                '}';
     }
 
     @Override

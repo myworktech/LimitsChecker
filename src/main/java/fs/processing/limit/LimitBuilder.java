@@ -9,8 +9,8 @@ public class LimitBuilder {
     private Long amount = 0L;
     private Long paymentCount = 0L;
 
-    private LocalDateTime boundStart;
-    private LocalDateTime boundEnd;
+    private LocalDateTime boundStart = LocalDateTime.MIN;
+    private LocalDateTime boundEnd = LocalDateTime.MIN;
     private Duration interval = Duration.ZERO;
     private Boolean sameAccount = false;
     private Boolean sameService = false;

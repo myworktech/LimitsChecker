@@ -1,16 +1,15 @@
 package fs.processing.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 
 public class Account implements Serializable {
-    public Account(int id, String name) {
+    public Account(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    private int id;
+    private Long id;
 
     private String name;
 
@@ -22,13 +21,13 @@ public class Account implements Serializable {
         this.name = name;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
 
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -45,7 +44,7 @@ public class Account implements Serializable {
 
     @Override
     public int hashCode() {
-        return id;
+        return id.hashCode();
     }
 
     @Override

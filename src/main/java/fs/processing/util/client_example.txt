@@ -1,19 +1,5 @@
-limits.add(new BetweenLimit(5000, DateUtils.getDateLimit("09:00"), DateUtils.getDateLimit("23:00")));
-limits.add(new IntervalLimit(2000, 1L));
-limits.add(new Last24hoursLimit(2000));
-
-
-
-
-limits.add(new TimeIntervalLimit(5000, setBound("09:00"), setBound("23:15")))
-limits.add(new TimeIntervalLimit(1000, setBound("23:30"), setBound("09:15")))
-limits.add(new SamePayment(2000, setInterval("24:00")))
-
 // 1. Не более 5000 руб. днем с 9:00 утра до 23:00 за одну услугу(*)
-limit.build()
-				.setBound("09:00")
-				.setBound("23:00")
-				.setAmount(5000);
+// 2. Не более 5000 руб. вечером с 18:00 до 23:00 за одну услугу(*)
 
 // 3. Не более 2000 руб. в сутки по одинаковым платежам(**)
 limit.build()

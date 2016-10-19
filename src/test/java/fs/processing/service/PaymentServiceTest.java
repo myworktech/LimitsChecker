@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -22,11 +23,9 @@ public class PaymentServiceTest {
     Service service1;
     Service service2;
     Service service3;
+    Account account11;
     Account account22;
     Account account33;
-    Account account44;
-    Account account55;
-    Account account66;
 
     private PaymentService paymentService = new PaymentService();
 
@@ -42,14 +41,18 @@ public class PaymentServiceTest {
     }
 
     private void initPayments() throws Exception {
-        paymentListSource.add(new Payment(1500L, account22, service1, LocalDateTime.parse("2016-01-01T08:10")));
+        paymentListSource.add(new Payment(1500L, account11, service1, LocalDateTime.parse("2016-01-01T08:10")));
         paymentListSource.add(new Payment(1500L, account22, service2, LocalDateTime.parse("2016-01-01T08:20")));
         paymentListSource.add(new Payment(2500L, account33, service1, LocalDateTime.parse("2016-01-01T08:30")));
-        paymentListSource.add(new Payment(1500L, account22, service2, LocalDateTime.parse("2016-01-01T08:50")));
-        paymentListSource.add(new Payment(1500L, account22, service1, LocalDateTime.parse("2016-01-01T09:10")));
-        paymentListSource.add(new Payment(1000L, account33, service1, LocalDateTime.parse("2016-01-01T09:30")));
-        paymentListSource.add(new Payment(3000L, account33, service1, LocalDateTime.parse("2016-01-01T10:00")));
-        paymentListSource.add(new Payment(2000L, account33, service1, LocalDateTime.parse("2016-01-01T19:30")));
+        paymentListSource.add(new Payment(1500L, account11, service2, LocalDateTime.parse("2016-01-01T08:40")));
+        paymentListSource.add(new Payment(1500L, account22, service1, LocalDateTime.parse("2016-01-01T08:50")));
+        paymentListSource.add(new Payment(400L, account33, service2, LocalDateTime.parse("2016-01-01T09:00")));
+        paymentListSource.add(new Payment(3000L, account11, service1, LocalDateTime.parse("2016-01-01T10:00")));
+        paymentListSource.add(new Payment(2000L, account22, service2, LocalDateTime.parse("2016-01-01T12:30")));
+        paymentListSource.add(new Payment(2000L, account33, service1, LocalDateTime.parse("2016-01-01T18:00")));
+        paymentListSource.add(new Payment(2000L, account11, service2, LocalDateTime.parse("2016-01-01T18:30")));
+        paymentListSource.add(new Payment(2000L, account22, service1, LocalDateTime.parse("2016-01-01T19:00")));
+        paymentListSource.add(new Payment(2000L, account33, service2, LocalDateTime.parse("2016-01-01T19:30")));
     }
 
     @Test
@@ -67,17 +70,19 @@ public class PaymentServiceTest {
     }
 
     @Test
-    public void testFirstLimit() throws Exception {
+    public void testTimeBoundsLimit() throws Exception {
 
         limitList.add(new LimitBuilder()
                 .setBoundStart(LocalDateTime.parse("2016-01-01T08:15"))
-                .setBoundEnd(LocalDateTime.parse("2016-01-01T09:00"))
+                .setBoundEnd(LocalDateTime.parse("2016-01-01T10:10"))
+                .setSamePaymentCount(2l)
                 .setAmount(2000L)
                 .build());
 
 //        limitList.add(new LimitBuilder()
-//                .setInterval(Duration.of(40, MINUTES))
-//                .setAmount(3500L)
+//                .setBoundStart(LocalDateTime.parse("2016-01-01T17:50"))
+//                .setBoundEnd(LocalDateTime.parse("2016-01-01T19:10"))
+//                .setAmount(1000L)
 //                .build());
 
         paymentService.addLimits(limitList);
@@ -85,11 +90,16 @@ public class PaymentServiceTest {
         for (Payment payment : paymentListSource)
             paymentService.process(payment);
 
+//        List<Long> ids = Arrays.asList(2L, 3L, 4L, 5L, 9L, 10L, 11L);
+//        for (Payment p : paymentService.paymentList) {
+//            if (ids.contains(p.getId()))
+//            assertEquals(p.getStatus(), PaymentStatus.SUBMIT_REQUIRED);
+//        }
         paymentService.print();
     }
 
     @Test
-    public void testSecondLimit() throws Exception {
+    public void testTimeIntervalLimit() throws Exception {
 
         limitList.add(new LimitBuilder()
                 .setBoundStart(LocalDateTime.parse("2016-01-01T09:30"))
@@ -118,11 +128,9 @@ public class PaymentServiceTest {
     }
 
     private void initAccounts() {
-        account22 = new Account(1, "101022");
-        account33 = new Account(2, "101033");
-        account44 = new Account(3, "101044");
-        account55 = new Account(4, "101055");
-        account66 = new Account(5, "101066");
+        account11 = new Account(1L, "101011");
+        account22 = new Account(2L, "101022");
+        account33 = new Account(3L, "101033");
     }
 }
 
