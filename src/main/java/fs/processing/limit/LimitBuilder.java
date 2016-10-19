@@ -7,10 +7,11 @@ import java.time.LocalDateTime;
 
 public class LimitBuilder {
     private Long amount = 0L;
-    private Long samePaymentCount = 0L;
+    private Long paymentCount = 0L;
+
     private LocalDateTime boundStart;
     private LocalDateTime boundEnd;
-    private Duration interval;
+    private Duration interval = Duration.ZERO;
     private Boolean sameAccount = false;
     private Boolean sameService = false;
 
@@ -23,10 +24,18 @@ public class LimitBuilder {
         return this;
     }
 
-    public LimitBuilder setSamePaymentCount(Long samePaymentCount) {
-        this.samePaymentCount = samePaymentCount;
+    public LimitBuilder setPaymentCount(Long paymentCount) {
+        this.paymentCount = paymentCount;
         return this;
     }
+
+    public LimitBuilder setSamePaymentCount(Long samePaymentCount) {
+        this.paymentCount = samePaymentCount;
+        this.sameAccount = true;
+        this.sameService = true;
+        return this;
+    }
+
 
     public LimitBuilder setBoundStart(LocalDateTime boundStart) {
         this.boundStart = boundStart;
@@ -48,13 +57,17 @@ public class LimitBuilder {
         return this;
     }
 
-    public LimitBuilder setSameAccount(Boolean sameAccount) {
-        this.sameAccount = sameAccount;
+    public LimitBuilder setSameAccount() {
+        this.sameAccount = true;
         return this;
     }
 
     public Long getAmount() {
         return amount;
+    }
+
+    public Long getPaymentCount() {
+        return paymentCount;
     }
 
     public LocalDateTime getBoundStart() {
@@ -63,10 +76,6 @@ public class LimitBuilder {
 
     public LocalDateTime getBoundEnd() {
         return boundEnd;
-    }
-
-    public Long getSamePaymentCount() {
-        return samePaymentCount;
     }
 
     public Duration getInterval() {

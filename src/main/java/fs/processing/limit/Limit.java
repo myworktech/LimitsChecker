@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Limit {
-    private Long amountThreshold = 0L;
-    private Long samePaymentCountThreshold = 0L;
+    private Long amountThreshold;
+    private Long paymentCountThreshold;
+
     private LocalDateTime boundStart;
     private LocalDateTime boundEnd;
     private Duration interval;
@@ -19,7 +20,7 @@ public class Limit {
 
     Limit(LimitBuilder limitBuilder) {
         amountThreshold = limitBuilder.getAmount();
-        samePaymentCountThreshold = limitBuilder.getSamePaymentCount();
+        paymentCountThreshold = limitBuilder.getPaymentCount();
         boundStart = limitBuilder.getBoundStart();
         boundEnd = limitBuilder.getBoundEnd();
         interval = limitBuilder.getInterval();
@@ -28,47 +29,47 @@ public class Limit {
     }
 
     public void check(Payment payment, List<Payment> paymentList) {
-        if (amountThreshold.equals(0L) && samePaymentCountThreshold.equals(0L)) {
+        if (amountThreshold.equals(0L) && paymentCountThreshold.equals(0L)) {
             setOkayStatusFor(payment);
             return;
         }
 
-//        List<Payment> result = checkBounds(paymentList)
-//                .checkInterval(paymentList)
-//                .checkSameAccount(paymentList)
-//                .checkSameService(paymentList);
-
         List<Payment> result = paymentList.stream()
-                            .filter(p -> checkBounds(p))
-                            .filter(p -> checkInterval(p, payment))
-                            .filter(p -> checkSameService(p, payment))
-                            .filter(p -> checkSameAccount(p, payment))
-
-                            .collect(Collectors.toList());
+                .filter(
+                        p -> checkBounds(p)
+                                || checkInterval(p, payment)
+                                || checkSameService(p, payment)
+                                || checkSameAccount(p, payment)
+                )
+                .collect(Collectors.toList());
 
         Long count = result.stream().count();
         Long sum = result.stream().mapToLong(p -> p.getAmount()).sum();
 
-
-        if ((sum > amountThreshold ) && checkBounds(payment)) {
+        if (((checkAmountThreshold(sum)) || checkCountThreshold(count)) && checkBounds(payment)) {
             setFailedStatusFor(payment);
             return;
         }
 
         if (payment.getStatus() != PaymentStatus.SUBMIT_REQUIRED)
-        setOkayStatusFor(payment);
+            setOkayStatusFor(payment);
+    }
+
+    private boolean checkAmountThreshold(Long sum) {
+        return amountThreshold != 0 && sum > amountThreshold;
+    }
+
+    private boolean checkCountThreshold(Long count) {
+        return paymentCountThreshold != 0 && count > paymentCountThreshold;
     }
 
     private boolean checkSameAccount(Payment p, Payment payment) {
-        if (!sameAccount) return true;
-        return p.getAccount().equals(payment.getAccount());
+        return !sameAccount || p.getAccount().equals(payment.getAccount());
     }
 
     private boolean checkSameService(Payment p, Payment payment) {
-        if (!sameService) return true;
-        return p.getService().equals(payment.getService());
+        return !sameService || p.getService().equals(payment.getService());
     }
-
 
     private void setOkayStatusFor(Payment payment) {
         payment.setStatus(PaymentStatus.READY_TO_PROCESS);
@@ -87,10 +88,7 @@ public class Limit {
     private boolean checkInterval(Payment payment, Payment paymentOrig) {
         Duration diff = Duration.between(payment.getPaymentDate(), paymentOrig.getPaymentDate());
 
-       int result = interval.compareTo(diff);
-
-        return result > 0;
+        return interval.compareTo(diff) > 0;
     }
-
 
 }

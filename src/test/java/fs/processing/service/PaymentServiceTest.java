@@ -1,6 +1,5 @@
 package fs.processing.service;
 
-
 import fs.processing.limit.LimitBuilder;
 import fs.processing.limit.Limit;
 import fs.processing.model.Account;
@@ -17,7 +16,6 @@ import java.util.List;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.junit.Assert.assertEquals;
-
 
 public class PaymentServiceTest {
 
@@ -63,7 +61,6 @@ public class PaymentServiceTest {
         for (Payment payment : paymentListSource)
             paymentService.process(payment);
 
-
         for (Payment p : paymentService.paymentList) {
             assertEquals(p.getStatus(), PaymentStatus.READY_TO_PROCESS);
         }
@@ -72,18 +69,16 @@ public class PaymentServiceTest {
     @Test
     public void testFirstLimit() throws Exception {
 
-//        limitList.add(new LimitBuilder()
-//                .setBoundStart(LocalDateTime.parse("2016-01-01T08:15"))
-//                .setBoundEnd(LocalDateTime.parse("2016-01-01T09:00"))
-//                .setAmount(2000L)
-//                .build());
-
-
-
         limitList.add(new LimitBuilder()
-                .setInterval(Duration.of(40, MINUTES ))
-                .setAmount(3500L)
+                .setBoundStart(LocalDateTime.parse("2016-01-01T08:15"))
+                .setBoundEnd(LocalDateTime.parse("2016-01-01T09:00"))
+                .setAmount(2000L)
                 .build());
+
+//        limitList.add(new LimitBuilder()
+//                .setInterval(Duration.of(40, MINUTES))
+//                .setAmount(3500L)
+//                .build());
 
         paymentService.addLimits(limitList);
 
@@ -96,18 +91,16 @@ public class PaymentServiceTest {
     @Test
     public void testSecondLimit() throws Exception {
 
-//        limitList.add(new LimitBuilder()
-//                .setBoundStart(LocalDateTime.parse("2016-01-01T08:15"))
-//                .setBoundEnd(LocalDateTime.parse("2016-01-01T09:00"))
-//                .setAmount(2000L)
-//                .build());
-
-
+        limitList.add(new LimitBuilder()
+                .setBoundStart(LocalDateTime.parse("2016-01-01T09:30"))
+                .setBoundEnd(LocalDateTime.parse("2016-01-01T19:51"))
+                .setPaymentCount(2L)
+                .build());
 
         limitList.add(new LimitBuilder()
-                .setInterval(Duration.of(60, MINUTES ))
-                .setAmount(3000L)
-                .setSameService()
+                .setBoundStart(LocalDateTime.parse("2016-01-01T08:05"))
+                .setBoundEnd(LocalDateTime.parse("2016-01-01T08:51"))
+                .setPaymentCount(2L)
                 .build());
 
         paymentService.addLimits(limitList);

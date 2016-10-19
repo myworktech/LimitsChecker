@@ -52,6 +52,10 @@ public class Payment {
         return paymentDate;
     }
 
+    public boolean isSamePayment(Payment payment) {
+        return this.getAccount().equals(payment.getAccount()) && this.getService().equals(payment.getService());
+    }
+
     @Override
     public String toString() {
         return "Payment{ " +
