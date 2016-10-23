@@ -46,8 +46,10 @@ public class Limit {
         Long count = result.stream().count();
         Long sum = result.stream().mapToLong(p -> p.getAmount()).sum();
 
-        if (((checkAmountThreshold(sum)) || checkCountThreshold(count)) && checkBounds(payment)) {
-            setFailedStatusFor(payment);
+        if (((checkAmountThreshold(sum)) || checkCountThreshold(count))) {
+            setFailedStatusFor(result.get(result.size() - 1));
+            if (payment.getStatus() == PaymentStatus.NEW_PAYMENT)
+                setOkayStatusFor(payment);
             return;
         }
 

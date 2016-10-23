@@ -8,9 +8,13 @@ import java.util.*;
 
 public class PaymentService {
 
-    public final List<Payment> paymentList = new ArrayList<Payment>();
+    private final List<Payment> paymentList = new ArrayList<Payment>();
 
     private List<Limit> limitList;
+
+    public List<Payment> getPaymentList() {
+        return paymentList;
+    }
 
     public void process(Payment payment) {
         payment.setId(paymentList.size()+1L); // may be wrong. must count payments separately.
