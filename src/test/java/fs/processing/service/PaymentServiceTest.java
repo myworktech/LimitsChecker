@@ -9,13 +9,11 @@ import fs.processing.model.Service;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.junit.Assert.assertEquals;
 
 public class PaymentServiceTest {
@@ -55,6 +53,25 @@ public class PaymentServiceTest {
         paymentListSource.add(new Payment(2000L, account33, service2, LocalDateTime.parse("2016-01-01T19:30")));
     }
 
+    private void initServices() {
+        service1 = new Service(1L, "Mobile phone");
+        service2 = new Service(2L, "Bank account");
+        service3 = new Service(3L, "E-shop acc");
+    }
+
+    private void initAccounts() {
+        account11 = new Account(1L, "101011");
+        account22 = new Account(2L, "101022");
+        account33 = new Account(3L, "101033");
+    }
+
+    private void check(List<Long> ids) {
+        for (Payment p : paymentService.paymentList) {
+            if (ids.contains(p.getId()))
+                assertEquals(p.getStatus(), PaymentStatus.SUBMIT_REQUIRED);
+        }
+    }
+
     @Test
     public void testNoLimits() throws Exception {
         Limit limit = new LimitBuilder().build();
@@ -73,34 +90,49 @@ public class PaymentServiceTest {
     public void testTimeBoundsLimit() throws Exception {
 
         limitList.add(new LimitBuilder()
-                .setBoundStart(LocalDateTime.parse("2016-01-01T08:15"))
+                .setBoundStart(LocalDateTime.parse("2016-01-01T08:05"))
                 .setBoundEnd(LocalDateTime.parse("2016-01-01T10:10"))
-                .setSamePaymentCount(2l)
-                .setAmount(2000L)
+                .setSamePaymentCount(2L)
+                .setAmount(3000L)
                 .build());
 
-//        limitList.add(new LimitBuilder()
-//                .setBoundStart(LocalDateTime.parse("2016-01-01T17:50"))
-//                .setBoundEnd(LocalDateTime.parse("2016-01-01T19:10"))
-//                .setAmount(1000L)
-//                .build());
+        limitList.add(new LimitBuilder()
+                .setBoundStart(LocalDateTime.parse("2016-01-01T17:50"))
+                .setBoundEnd(LocalDateTime.parse("2016-01-01T19:10"))
+                .setAmount(1000L)
+                .build());
 
         paymentService.addLimits(limitList);
 
         for (Payment payment : paymentListSource)
             paymentService.process(payment);
 
-//        List<Long> ids = Arrays.asList(2L, 3L, 4L, 5L, 9L, 10L, 11L);
-//        for (Payment p : paymentService.paymentList) {
-//            if (ids.contains(p.getId()))
-//            assertEquals(p.getStatus(), PaymentStatus.SUBMIT_REQUIRED);
-//        }
+        List<Long> ids = Arrays.asList(7L, 9L, 10L, 11L);
+        check(ids);
+        paymentService.print();
+
+    }
+
+    @Test
+    public void testSamePaymentCount() throws Exception {
+
+        limitList.add(new LimitBuilder()
+                .setSamePaymentCount(2L)
+                .setAmount(3000L)
+                .build());
+
+        paymentService.addLimits(limitList);
+
+        for (Payment payment : paymentListSource)
+            paymentService.process(payment);
+
+        List<Long> ids = Arrays.asList(7L, 8L, 9L, 10L, 11L);
+        check(ids);
         paymentService.print();
     }
 
     @Test
-    public void testTimeIntervalLimit() throws Exception {
-
+    public void testPaymentCountLimit() throws Exception {
         limitList.add(new LimitBuilder()
                 .setBoundStart(LocalDateTime.parse("2016-01-01T09:30"))
                 .setBoundEnd(LocalDateTime.parse("2016-01-01T19:51"))
@@ -111,6 +143,7 @@ public class PaymentServiceTest {
                 .setBoundStart(LocalDateTime.parse("2016-01-01T08:05"))
                 .setBoundEnd(LocalDateTime.parse("2016-01-01T08:51"))
                 .setPaymentCount(2L)
+                .setAmount(4000L)
                 .build());
 
         paymentService.addLimits(limitList);
@@ -118,19 +151,9 @@ public class PaymentServiceTest {
         for (Payment payment : paymentListSource)
             paymentService.process(payment);
 
+        List<Long> ids = Arrays.asList(3L, 4L, 5L, 9L, 10L, 11L, 12L);
+        check(ids);
         paymentService.print();
     }
 
-    private void initServices() {
-        service1 = new Service(1L, "Mobile phone");
-        service2 = new Service(2L, "Bank account");
-        service3 = new Service(3L, "E-shop acc");
-    }
-
-    private void initAccounts() {
-        account11 = new Account(1L, "101011");
-        account22 = new Account(2L, "101022");
-        account33 = new Account(3L, "101033");
-    }
 }
-

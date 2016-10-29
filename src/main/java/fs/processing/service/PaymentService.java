@@ -8,7 +8,7 @@ import java.util.*;
 
 public class PaymentService {
 
-    public final List<Payment> paymentList = new ArrayList<Payment>();
+    public final List<Payment> paymentList = new ArrayList<>();
 
     private List<Limit> limitList;
 
@@ -32,6 +32,7 @@ public class PaymentService {
         for (Payment payment : paymentList) {
             System.out.print(payment + "\n");
         }
+        System.out.println("\n");
     }
 
     public void addLimits(List<Limit> limitList) {
