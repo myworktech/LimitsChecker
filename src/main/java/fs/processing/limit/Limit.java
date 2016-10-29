@@ -47,7 +47,7 @@ public class Limit {
         Long sum = result.stream().mapToLong(p -> p.getAmount()).sum();
 
         if (((checkAmountThreshold(sum)) || checkCountThreshold(count))) {
-            setFailedStatusFor(result.get(result.size() - 1));
+            setFailedStatusFor(getLastPayment(result));
             if (payment.getStatus() == PaymentStatus.NEW_PAYMENT)
                 setOkayStatusFor(payment);
             return;
@@ -55,6 +55,10 @@ public class Limit {
 
         if (payment.getStatus() != PaymentStatus.SUBMIT_REQUIRED)
             setOkayStatusFor(payment);
+    }
+
+    private Payment getLastPayment(List<Payment> paymentList) {
+        return paymentList.get(paymentList.size()-1);
     }
 
     private boolean checkAmountThreshold(Long sum) {
@@ -92,7 +96,7 @@ public class Limit {
 
         Duration diff = Duration.between(payment.getPaymentDate(), paymentOrig.getPaymentDate());
 
-        return (interval.compareTo(diff) > 0);
+        return interval.compareTo(diff) > 0;
     }
 
 }
