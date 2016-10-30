@@ -27,3 +27,15 @@ Solution must satisfy next requirements:
 5. All external libraries (for datetime transformations, for example) must be referenced using maven or gradle.
 6. Do not use GUI, databassess, file or network input/output, concurrency.
 
+##
+My solution can be improved by grouping limit restrictions in two groups: filtrating and restricting.
+Filtrating would be such criterias as time bounds, time limits, same services or accounts. Restricting would be money amount and payments count.
+That way logic of Limit class can be separated into some fine-grained smaller classes.
+The client would be
+```java
+new LimitBuilder()
+                .setFilters(Filters.create().setBoundStart(LocalDateTime.parse("2016-01-01T09:30")).setBoundEnd(LocalDateTime.parse("2016-01-01T19:51"))
+                .setRestrictions(Restriction.create().setPaymentCount(2L).setAmount(1000L))
+                .build())
+```
+Also money should be `BigDecimal` rather then long`
